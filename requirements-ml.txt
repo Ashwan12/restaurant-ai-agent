@@ -1,0 +1,4 @@
+# Extended dependencies for full local GPU / SentenceTransformers model
+-r requirements.txt
+faiss-cpu>=1.8.0
+sentence-transformers>=3.0.0

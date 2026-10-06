@@ -22,6 +22,12 @@ class HybridVectorStore:
 
         texts = [f"{doc['title']} {doc['category']} {doc['content']}" for doc in self.documents]
 
+        import os
+        if os.getenv("VERCEL"):
+            self._init_lexical_fallback(texts)
+            self._initialized = True
+            return
+
         try:
             from sentence_transformers import SentenceTransformer
             import faiss

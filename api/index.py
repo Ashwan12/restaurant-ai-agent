@@ -9,3 +9,4 @@ sys.path.insert(0, str(root_dir))
 from app.main import app
 
 # Handler export for Vercel Serverless Function
+
