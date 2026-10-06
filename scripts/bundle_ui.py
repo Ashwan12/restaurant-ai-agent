@@ -21,3 +21,4 @@ if '<script src="/static/app.js"></script>' in html:
 
 index_path.write_text(html, encoding="utf-8")
 print(f"Successfully bundled inline assets into {index_path}. Total size: {len(html)} bytes.")
+
