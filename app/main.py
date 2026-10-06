@@ -47,6 +47,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Vercel Path Rewrite Normalizer Middleware
+@app.middleware("http")
+async def vercel_path_rewrite_normalizer(request: Request, call_next):
+    raw_path = request.scope.get("path", "")
+    for prefix in ["/api/index.py", "/api/index"]:
+        if raw_path.startswith(prefix):
+            new_path = raw_path[len(prefix):]
+            if not new_path or not new_path.startswith("/"):
+                new_path = "/" + new_path
+            request.scope["path"] = new_path
+            break
+    return await call_next(request)
+
 # Mount API routers
 app.include_router(orders_router)
 app.include_router(tickets_router)
@@ -58,6 +71,8 @@ if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 @app.get("/", summary="Serve Web Dashboard")
+@app.get("/api/index.py", summary="Serve Web Dashboard via Vercel")
+@app.get("/api/index", summary="Serve Web Dashboard via Vercel")
 def serve_index():
     index_file = STATIC_DIR / "index.html"
     if index_file.exists():
