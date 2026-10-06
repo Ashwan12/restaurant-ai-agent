@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 from contextlib import asynccontextmanager
 
 from app.config import settings
@@ -76,7 +76,7 @@ if STATIC_DIR.exists():
 def serve_index():
     index_file = STATIC_DIR / "index.html"
     if index_file.exists():
-        return FileResponse(index_file)
+        return HTMLResponse(content=index_file.read_text(encoding="utf-8"))
     return {
         "status": "online",
         "message": "Restaurant Support AI Agent API is running.",

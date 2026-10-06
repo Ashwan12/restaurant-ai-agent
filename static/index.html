@@ -4,7 +4,639 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gourmet Bistro - AI Restaurant Support & Operations Agent</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.2);
+    --border: #334155;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --card-bg: #1e293b;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    height: 64px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-logo {
+    font-size: 28px;
+}
+
+.brand h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.brand .subtext {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--success);
+    font-weight: 500;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+}
+
+.simulation-toggle-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.toggle-label {
+    font-size: 0.8rem;
+    color: #fca5a5;
+    font-weight: 500;
+}
+
+/* Switch UI */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #475569;
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--danger);
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+.docs-btn {
+    text-decoration: none;
+    color: var(--accent);
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.docs-btn:hover {
+    background: var(--accent-glow);
+}
+
+/* Content Container */
+.content-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 16px;
+    flex: 1;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
+/* Chat Section */
+.chat-section {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.quick-scenarios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(15, 23, 42, 0.6);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+}
+
+.scenario-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.chip {
+    background: var(--bg-tertiary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chip:hover {
+    background: var(--accent);
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.chat-window {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.message {
+    display: flex;
+    gap: 12px;
+    max-width: 90%;
+}
+
+.user-msg {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.assistant-msg {
+    align-self: flex-start;
+}
+
+.msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-tertiary);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.user-msg .msg-avatar {
+    background: #3b82f6;
+}
+
+.msg-content {
+    background: var(--bg-tertiary);
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-msg .msg-content {
+    background: #2563eb;
+    color: white;
+}
+
+.msg-content p {
+    margin-bottom: 8px;
+}
+
+.msg-content p:last-child {
+    margin-bottom: 0;
+}
+
+.msg-content .hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Authoritative Data Card (Requirement A & B Separation) */
+.authoritative-card {
+    margin-top: 10px;
+    background: #0f172a;
+    border-left: 4px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.authoritative-badge {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.2);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.guardrail-alert {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid var(--danger);
+    color: #fca5a5;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.sources-box {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.sources-box strong {
+    color: var(--text-secondary);
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+    background: var(--bg-secondary);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.chat-input-area input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.primary-btn {
+    background: #0284c7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.primary-btn:hover {
+    background: #0369a1;
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.secondary-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Operations & Observability Section */
+.operations-section {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 12px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(56, 189, 248, 0.05);
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-subhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.tab-subhead h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+/* Traces */
+.traces-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.trace-item {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.85rem;
+}
+
+.trace-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.trace-id {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.trace-latency {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+.trace-user-msg {
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.tool-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    margin-right: 6px;
+    margin-bottom: 4px;
+}
+
+.tool-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.tool-failed {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Data Tables */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+}
+
+.data-table th, .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table th {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.badge-accent { background: rgba(56, 189, 248, 0.15); color: var(--accent); }
+.badge-success { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; }
+.badge-warning { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+.badge-danger { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+/* Workflow Test Form */
+.workflow-test-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-group input, .form-group textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.85rem;
+}
+
+.workflow-result-box {
+    margin-top: 16px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.workflow-result-box h4 {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    color: var(--accent);
+}
+
+.workflow-result-box pre {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: #e2e8f0;
+    overflow-x: auto;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 30px 0;
+}
+
+
+</style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
@@ -180,7 +812,325 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script>
+// Gourmet Bistro AI Agent Frontend Client
+document.addEventListener("DOMContentLoaded", () => {
+    let currentConversationId = null;
+
+    // Elements
+    const chatWindow = document.getElementById("chat-window");
+    const chatForm = document.getElementById("chat-form");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const clearChatBtn = document.getElementById("clear-chat-btn");
+    const chaosToggle = document.getElementById("chaos-failure-toggle");
+    const tracesList = document.getElementById("traces-list");
+    const ordersTbody = document.getElementById("orders-tbody");
+    const ticketsTbody = document.getElementById("tickets-tbody");
+    const workflowForm = document.getElementById("workflow-form");
+
+    // Initialize
+    refreshOrders();
+    refreshTickets();
+    refreshTraces();
+
+    // Tab Navigation
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+            btn.classList.add("active");
+            const target = document.getElementById(btn.dataset.tab);
+            if (target) target.classList.add("active");
+
+            // Auto refresh active tab
+            if (btn.dataset.tab === "tab-orders") refreshOrders();
+            if (btn.dataset.tab === "tab-tickets") refreshTickets();
+            if (btn.dataset.tab === "tab-traces") refreshTraces();
+        });
+    });
+
+    // Refresh Buttons
+    document.getElementById("refresh-traces-btn")?.addEventListener("click", refreshTraces);
+    document.getElementById("refresh-orders-btn")?.addEventListener("click", refreshOrders);
+    document.getElementById("refresh-tickets-btn")?.addEventListener("click", refreshTickets);
+
+    // Scenario Quick Chips
+    document.querySelectorAll(".chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+            const prompt = chip.dataset.prompt;
+            if (prompt) {
+                userInput.value = prompt;
+                handleChatSubmit();
+            }
+        });
+    });
+
+    // Clear Chat
+    clearChatBtn.addEventListener("click", () => {
+        currentConversationId = null;
+        chatWindow.innerHTML = `
+            <div class="message assistant-msg">
+                <div class="msg-avatar">🤖</div>
+                <div class="msg-content">
+                    <p>New conversation started. How may I assist you with orders or restaurant policies?</p>
+                </div>
+            </div>
+        `;
+    });
+
+    // Chaos Failure Toggle
+    chaosToggle.addEventListener("change", async (e) => {
+        const enabled = e.target.checked;
+        try {
+            const res = await fetch(`/api/orders/simulate-failure?enabled=${enabled}`, { method: "POST" });
+            const data = await res.json();
+            console.log("Simulate Failure:", data.message);
+        } catch (err) {
+            console.error("Toggle failed:", err);
+        }
+    });
+
+    // Chat Submission
+    chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        handleChatSubmit();
+    });
+
+    async function handleChatSubmit() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        // Append User Message
+        appendUserMessage(text);
+        userInput.value = "";
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        // Placeholder Assistant Message
+        const tempMsgEl = document.createElement("div");
+        tempMsgEl.className = "message assistant-msg";
+        tempMsgEl.innerHTML = `
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-content">
+                <p><em>Reasoning over request and verifying operational tools...</em></p>
+            </div>
+        `;
+        chatWindow.appendChild(tempMsgEl);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        try {
+            const response = await fetch("/api/agent/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: text,
+                    conversation_id: currentConversationId
+                })
+            });
+
+            const data = await response.json();
+            currentConversationId = data.conversation_id;
+
+            // Render Full Response
+            renderAssistantMessage(tempMsgEl, data);
+            refreshTraces();
+            refreshOrders();
+            refreshTickets();
+        } catch (err) {
+            tempMsgEl.querySelector(".msg-content").innerHTML = `
+                <p style="color:var(--danger)">Error contacting agent server: ${err.message}</p>
+            `;
+        } finally {
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    }
+
+    function appendUserMessage(text) {
+        const msgEl = document.createElement("div");
+        msgEl.className = "message user-msg";
+        msgEl.innerHTML = `
+            <div class="msg-avatar">👤</div>
+            <div class="msg-content">
+                <p>${escapeHtml(text)}</p>
+            </div>
+        `;
+        chatWindow.appendChild(msgEl);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    function renderAssistantMessage(el, data) {
+        const contentBox = el.querySelector(".msg-content");
+        contentBox.innerHTML = "";
+
+        // Guardrail alert banner
+        if (data.guardrail_triggered) {
+            contentBox.innerHTML += `
+                <div class="guardrail-alert">
+                    <strong>🛡️ Guardrail Shield Triggered</strong><br>
+                    ${escapeHtml(data.response)}
+                </div>
+            `;
+            return;
+        }
+
+        // Natural Language response
+        const p = document.createElement("p");
+        p.textContent = data.response;
+        p.style.whiteSpace = "pre-line";
+        contentBox.appendChild(p);
+
+        // Authoritative Data Card (Requirement A & B Separation)
+        if (data.authoritative_data) {
+            const authCard = document.createElement("div");
+            authCard.className = "authoritative-card";
+            authCard.innerHTML = `
+                <span class="authoritative-badge">Authoritative Operational Data</span>
+                <pre style="font-family:var(--font-mono); font-size:0.75rem; color:#bae6fd; overflow-x:auto;">${escapeHtml(JSON.stringify(data.authoritative_data, null, 2))}</pre>
+            `;
+            contentBox.appendChild(authCard);
+        }
+
+        // RAG Source Citations
+        if (data.rag_sources && data.rag_sources.length > 0) {
+            const sourcesBox = document.createElement("div");
+            sourcesBox.className = "sources-box";
+            let sourcesHtml = "<strong>📚 Grounded Knowledge Sources:</strong><br>";
+            data.rag_sources.forEach(src => {
+                sourcesHtml += `• <em>${escapeHtml(src.title)}</em> [Score: ${src.score}]<br>`;
+            });
+            sourcesBox.innerHTML = sourcesHtml;
+            contentBox.appendChild(sourcesBox);
+        }
+    }
+
+    // Refresh Traces
+    async function refreshTraces() {
+        try {
+            const res = await fetch("/api/agent/traces?limit=15");
+            const traces = await res.json();
+            if (!traces || traces.length === 0) {
+                tracesList.innerHTML = `<div class="empty-state">No traces logged yet.</div>`;
+                return;
+            }
+
+            tracesList.innerHTML = traces.map(t => {
+                const toolsHtml = (t.tools_called || []).map(tool => {
+                    const statusClass = tool.status === "success" ? "tool-success" : "tool-failed";
+                    return `<span class="tool-chip ${statusClass}">🛠️ ${escapeHtml(tool.tool_name)} (${tool.latency_ms}ms) [${tool.status}]</span>`;
+                }).join("");
+
+                return `
+                    <div class="trace-item">
+                        <div class="trace-top">
+                            <span class="trace-id">${t.trace_id}</span>
+                            <span class="trace-latency">⏱️ ${t.latency_ms} ms</span>
+                        </div>
+                        <div class="trace-user-msg"><strong>User:</strong> "${escapeHtml(t.user_message)}"</div>
+                        <div style="margin-bottom:6px;">${toolsHtml || '<span style="color:var(--text-muted);font-size:0.75rem;">No tools called</span>'}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">
+                            Guardrail: <strong>${escapeHtml(t.guardrail_status)}</strong>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        } catch (err) {
+            console.error("Traces error:", err);
+        }
+    }
+
+    // Refresh Orders
+    async function refreshOrders() {
+        try {
+            const res = await fetch("/api/orders");
+            const orders = await res.json();
+            ordersTbody.innerHTML = orders.map(o => {
+                let badgeClass = "badge-accent";
+                if (o.status === "Delivered") badgeClass = "badge-success";
+                if (o.status === "Cancelled") badgeClass = "badge-danger";
+                if (o.status === "Preparing") badgeClass = "badge-warning";
+
+                return `
+                    <tr>
+                        <td><strong>${o.order_id}</strong></td>
+                        <td>${escapeHtml(o.customer_name)}</td>
+                        <td><span class="badge ${badgeClass}">${o.status}</span></td>
+                        <td>$${o.total_amount.toFixed(2)}</td>
+                        <td>${escapeHtml(o.driver_name || 'N/A')} (${escapeHtml(o.estimated_delivery_time || 'N/A')})</td>
+                    </tr>
+                `;
+            }).join("");
+        } catch (err) {
+            console.error("Orders error:", err);
+        }
+    }
+
+    // Refresh Tickets
+    async function refreshTickets() {
+        try {
+            const res = await fetch("/api/support/tickets");
+            const tickets = await res.json();
+            ticketsTbody.innerHTML = tickets.map(t => {
+                let priorityClass = t.priority === "High" ? "badge-danger" : (t.priority === "Medium" ? "badge-warning" : "badge-accent");
+                return `
+                    <tr>
+                        <td><strong>${t.ticket_id}</strong></td>
+                        <td>${t.order_id || 'N/A'}</td>
+                        <td>${t.issue_category}</td>
+                        <td><span class="badge ${priorityClass}">${t.priority}</span></td>
+                        <td>${escapeHtml(t.customer_name)}</td>
+                        <td title="${escapeHtml(t.description)}">${escapeHtml(t.description.substring(0, 35))}...</td>
+                        <td><span class="badge badge-accent">${t.status}</span></td>
+                    </tr>
+                `;
+            }).join("");
+        } catch (err) {
+            console.error("Tickets error:", err);
+        }
+    }
+
+    // Run Automation Workflow
+    workflowForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+            customer_name: document.getElementById("wf-name").value,
+            order_id: document.getElementById("wf-order").value.trim() || null,
+            message: document.getElementById("wf-message").value
+        };
+
+        try {
+            const res = await fetch("/api/automation/complaint", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            document.getElementById("workflow-result").style.display = "block";
+            document.getElementById("workflow-result-json").textContent = JSON.stringify(data, null, 2);
+            refreshTickets();
+        } catch (err) {
+            alert("Workflow trigger error: " + err.message);
+        }
+    });
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+});
+
+
+</script>
 </body>
 </html>
 
