@@ -21,7 +21,10 @@ class Settings:
     OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
     # Database
-    DATABASE_PATH: str = str(BASE_DIR / os.getenv("DATABASE_PATH", "restaurant.db"))
+    if os.getenv("VERCEL"):
+        DATABASE_PATH: str = "/tmp/restaurant.db"
+    else:
+        DATABASE_PATH: str = str(BASE_DIR / os.getenv("DATABASE_PATH", "restaurant.db"))
 
     # RAG & Embeddings
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
