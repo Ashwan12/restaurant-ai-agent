@@ -21,10 +21,13 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Initialize SQLite DB and seed initial sample orders and tickets
-    agent_logger.info("Initializing Restaurant Support & Operations Agent system...")
-    db.init_db()
-    seed_database()
-    agent_logger.info("Database and sample orders successfully ready.")
+    try:
+        agent_logger.info("Initializing Restaurant Support & Operations Agent system...")
+        db.init_db()
+        seed_database()
+        agent_logger.info("Database and sample orders successfully ready.")
+    except Exception as e:
+        agent_logger.warning(f"Serverless startup DB notice: {e}")
     yield
     agent_logger.info("Shutting down Restaurant Support Agent.")
 
