@@ -113,3 +113,4 @@ class TraceCollector:
             return [t.model_dump() for t in self._memory_traces[:limit]]
 
 trace_collector = TraceCollector()
+

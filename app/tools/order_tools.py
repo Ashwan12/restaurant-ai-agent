@@ -175,3 +175,4 @@ def cancel_order_request(order_id: str, reason: str) -> Dict[str, Any]:
             "policy_violation": True,
             "message": f"Order {order_id} is currently in '{current_status}' status. Per restaurant policy, orders cannot be directly cancelled once kitchen preparation has started or order has been dispatched. Please contact support or allow us to create a support ticket for manager review."
         }
+

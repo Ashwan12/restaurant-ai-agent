@@ -181,3 +181,4 @@ class AgentTrace(BaseModel):
     final_response: str
     total_latency_ms: float
     error: Optional[str] = None
+

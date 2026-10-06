@@ -121,3 +121,4 @@ class HybridVectorStore:
         return results
 
 vector_store = HybridVectorStore()
+

@@ -44,3 +44,4 @@ def test_workflow_idempotency_prevents_duplicate_tickets():
     res2 = complaint_workflow.execute(req)
     assert res2.status == "idempotent_duplicate_prevented"
     assert res2.ticket_id == first_ticket_id, "Ticket ID must match existing ticket instead of creating a duplicate."
+

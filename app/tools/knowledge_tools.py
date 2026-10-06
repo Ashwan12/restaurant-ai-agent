@@ -32,3 +32,4 @@ def search_restaurant_policy(query: str) -> Dict[str, Any]:
         "content": result["primary_source"].snippet,
         "sources": sources_summary
     }
+

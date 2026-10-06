@@ -105,3 +105,4 @@ def test_scenario_5_tool_failure_handling_no_hallucination():
     assert "unavailable" in res.response.lower() or "support" in res.response.lower()
     # Ensure it didn't pretend it's delivered or preparing
     assert "successfully delivered" not in res.response.lower()
+

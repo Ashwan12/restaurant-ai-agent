@@ -36,3 +36,4 @@ def api_list_support_tickets() -> List[Dict[str, Any]]:
     rows = cursor.fetchall()
     conn.close()
     return [dict(r) for r in rows]
+

@@ -81,3 +81,4 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"error": "An internal operational error occurred. Please contact restaurant technical support."}
     )
+

@@ -25,3 +25,4 @@ def list_workflow_events() -> List[Dict[str, Any]]:
     rows = cursor.fetchall()
     conn.close()
     return [dict(r) for r in rows]
+

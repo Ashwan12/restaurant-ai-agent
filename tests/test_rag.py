@@ -25,3 +25,4 @@ def test_rag_out_of_knowledge_fallback():
     assert res["grounded"] is False
     assert len(res["sources"]) == 0
     assert "could not find any documented policy" in res["message"]
+

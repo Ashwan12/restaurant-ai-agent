@@ -40,3 +40,4 @@ def test_secrets_masking():
     masked = security_guardrails.mask_secrets_in_output(leaked_text)
     assert "sk-" not in masked
     assert "[REDACTED" in masked
+

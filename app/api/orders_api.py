@@ -58,3 +58,4 @@ def toggle_failure_simulation(enabled: bool = Query(..., description="Set true t
         "simulation_active": tool_registry.simulate_order_api_down,
         "message": f"Order API failure simulation {'ENABLED (all order queries will fail with 503)' if enabled else 'DISABLED (normal operation)'}"
     }
+

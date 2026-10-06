@@ -68,3 +68,4 @@ def test_api_simulate_failure_toggle():
     client.post("/api/orders/simulate-failure?enabled=false")
     order_res2 = client.get("/api/orders/ORD-1005/status")
     assert order_res2.status_code == 200
+

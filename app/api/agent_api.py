@@ -21,3 +21,4 @@ def get_traces(limit: int = 25) -> List[Dict[str, Any]]:
 def get_conversation_history(conversation_id: str) -> List[Dict[str, str]]:
     """Retrieve full history of a conversation thread."""
     return context_manager.get_history(conversation_id, limit=20)
+

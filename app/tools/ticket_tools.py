@@ -118,3 +118,4 @@ def create_support_ticket(
         "estimated_sla": sla_map.get(priority, "4 hours"),
         "confirmation_message": f"Support Ticket #{ticket_id} has been logged under priority '{priority}'. Our support team will review it within {sla_map.get(priority, '4 hours')}."
     }
+

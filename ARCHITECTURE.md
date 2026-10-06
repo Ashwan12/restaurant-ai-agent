@@ -107,3 +107,4 @@ flowchart TD
   - Guardrail evaluation status
 - **Circuit Breaker / Step Limits**: The ReAct reasoning loop has an enforced ceiling (`max_iterations = 5`) to prevent uncontrolled infinite tool loops.
 - **Failure Simulation & Resilience**: Allows toggling simulated operational API failure (HTTP 503) to prove the agent reports system downtime gracefully without hallucinating false order statuses.
+

@@ -42,3 +42,4 @@ class KnowledgeBase:
         }
 
 knowledge_base = KnowledgeBase()
+

@@ -272,3 +272,4 @@ python -m pytest tests/ -v
 
 - Orders and support tickets are backed by SQLite for zero-setup local evaluation; for multi-region production, PostgreSQL and Redis should be configured.
 - The default configuration uses an intelligent local deterministic engine so that evaluators can run all tests and the web dashboard without needing to supply paid API keys. Adding `GEMINI_API_KEY` or `OPENAI_API_KEY` in `.env` activates real-time LLM inference automatically.
+

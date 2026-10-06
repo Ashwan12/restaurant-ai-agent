@@ -38,3 +38,4 @@ class Settings:
     ORDER_API_TIMEOUT_SECONDS: float = float(os.getenv("ORDER_API_TIMEOUT_SECONDS", "5.0"))
 
 settings = Settings()
+
